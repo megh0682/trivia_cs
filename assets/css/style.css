@@ -1,0 +1,63 @@
+body{
+	background-color: #ADD8E6;
+	font-family: monospace;
+}
+html, body {
+  height: 100%;
+}
+.radio > input[type=radio]{
+  margin-right:5px;
+  margin-left:5px
+}
+.radio > label{
+  margin-right:5px;
+  margin-left:5px
+}
+
+.jumbotron{
+  font-family: monospace;
+  margin-top: 0%;
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-bottom: 0; /* Remove the default bottom margin of .jumbotron */
+}
+.form-horizontal{
+  visibility: hidden;
+}
+
+.row{
+	margin-top:10px;
+}
+.timer>i{
+	visibility: hidden;
+}
+.dialogs { display: none; }
+
+.dialog {
+  background-color: #fff;
+  padding: 1em;
+  border-radius: .5em;
+  overflow: hidden;
+}
+
+.dialog button {
+  border: none;
+  background-color: #333;
+  color: #fff;
+  padding: .5em 1em;
+  font-size: 1em;
+  border-radius: .3em;
+  cursor: pointer;
+}
+
+.dialog button:hover { background-color: #444; }
+
+.dialog-footer {
+  background-color: #eee;
+  margin: -1em;
+  margin-top: 1em;
+  text-align: center;
+  padding: 1em;
+}
+
+
