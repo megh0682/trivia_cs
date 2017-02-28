@@ -63,8 +63,18 @@ var questionObject = {
  display_time:"00:00",
  display_time_interval:"",
  display_time_seconds:"",
+ timeout:"",
+ intervalFlag:false,
+ intervalID:"",
+ millisec:120000,
+ s:00,
+ m:00,
  init: function(){
+   clearInterval(this.intervalID);
+   this.intervalFlag = false;
+   this.millisec = 120000;
    clearTimeout(this.timeout_var);
+   clearTimeout(this.timeout);
    console.log("timer is OFF");
    clearInterval(this.interval_var);
    console.log("next click polling OFF");
@@ -98,71 +108,62 @@ var questionObject = {
    console.log(this.type);     
    //start the clock
    this.display();
-   this.display_time_seconds = 120000;
-   this.display_time = timeConverter(this.display_time_seconds);
-   console.log(this.display_time);
-   this.display_time_interval= setInterval(stopwatch_count,1);
   },
- startTimer:function(){
- 	var level = this.level.toUpperCase();
- 	var default_timeout = 120000;//in seconds
- 	switch (level) {
-    case 'EASY':
-    //Statements executed when the result of expression matches value1
-    default_timeout = default_timeout * 1;
-    break;
-    case 'MEDIUM':
-    //Statements executed when the result of expression matches value2
-    default_timeout = default_timeout * 2;
-    break;
-    case 'DIFFICULT':
-    //Statements executed when the result of expression matches valueN
-    default_timeout = default_timeout * 3;
-    break;
-    default:
-    //Statements executed when none of the values match the value of the expression
-    default_timeout = default_timeout * 1;
-    break;
-    }
-    console.log("starttimer is on for level: " + level);
-    var self = this;
-    //set timeout for the timer
-    this.timeout_var = setTimeout(function(){
-     //alert("On minute over");
-        var user_selection = $("input:radio:checked").next().text();
-        console.log("user_selection: "+ user_selection);
-        resultObject['Number']=questionObject.counter;
-        resultObject['Question']=questionObject.question;
-        resultObject['Your Answer']=user_selection;
-        resultObject['Correct Answer']=questionObject.answer;
-        if(resultObject['Your Answer'] === resultObject['Correct Answer'] ){
-            resultObject['Points Earned'] =1;
-        }else{
-            resultObject['Points Earned'] =0;
-        }
-        resultArray.push(resultObject);
-        console.log(resultArray);
-        self.init();
-    },120000);
-    console.log("timer is ON");
-    //set interval to poll on check next click every second
-    this.interval_var =setInterval(function(){
-    
-    if(this.isNextClicked === true){
-      console.log("I m in interval when isNextClicked is true");
-      //self.init();
-    }
- 
-    },1000);
-    console.log("polling on click on Next button ON");
-
- },
-
  getNextDataSet: function(cnt){
   // alert("getNextDataSet : # : data" + cnt + " : " +localJsonDataSet[cnt]);
    return localJsonDataSet[cnt];
 
  },
+ start2mintimer: function(){
+
+  if(this.intervalFlag === false){
+     this.intervalFlag = true;
+     var self = this;
+     this.intervalID = setInterval(function(){
+     self.millisec = self.millisec -1000;
+     console.log(self.millisec);
+     },1000);
+  }
+  if(this.millisec<=0){
+    clearInterval(this.intervalID);
+    this.intervalFlag = false;
+    //this.millisec = 120000;
+    console.log(this.intervalFlag);
+    console.log("time up");
+    alert("Time up");
+    var user_selection = $("input:radio:checked").next().text();
+    console.log("user_selection: "+ user_selection);
+    var resultObject = resultObject+"_"+questionObject.counter;
+    resultObject = {};
+    resultObject['Number']=questionObject.counter + 1;
+    resultObject['Question']=questionObject.question;
+    resultObject['Your Answer']=user_selection;
+    resultObject['Correct Answer']=questionObject.answer;
+    if(resultObject['Your Answer'] === resultObject['Correct Answer'] ){
+        resultObject['Points Earned'] =1;
+    }else{
+        resultObject['Points Earned'] =0;
+    }
+    debugger;
+    resultArray.push(resultObject);
+    console.log(resultArray);
+    this.init();
+  }
+    var mmss = timeConverter(this.millisec);
+    console.log(mmss);
+    var mmssArray = mmss.split(":");
+    this.s = mmssArray[1].trim();
+    this.m = mmssArray[0].trim();
+    console.log("seconds:" +this.s + "minutes:"+this.m);
+    $("#displayTimer > span").html("Timer : "+ this.m + ":" +this.s);
+    if(this.s<10){
+      this.s= "" + this.s;
+    }
+    var self = this;
+    setTimeout(function(){
+        self.start2mintimer();
+    },500);
+  },
 
  display:function(){
   
@@ -171,22 +172,19 @@ var questionObject = {
   $("#opt2").next().text(this.options[1]);
   $("#opt3").next().text(this.options[2]);
   $("#opt4").next().text(this.options[3]);
-  $("#displayTimer > span").html("Timer : "+ this.display_time);
+  //$("h1").text(m+" : "+s);
+  //$("#displayTimer > span").html("Timer : "+ this.m + ":" +this.s);
   $("input:radio").attr("checked", false);
   $("input:radio").removeAttr("checked");
   $("input:radio").prop("checked", false);
   $("input:radio").removeProp("checked");
-  this.startTimer();
+  this.start2mintimer();
 
  }
 
 };
 
-/**********************************************Result Object/Array*****************************************************************/
-/**
-resultObject is an array of result objects
-*/
-var resultObject={};
+/**********************************************Result Array*****************************************************************/
 var resultArray = [];
 
 /***********************************************End of Result Object*********************************************************/
@@ -231,9 +229,12 @@ $("#nextBtn").click(function(){
   
   var isNextInvoked = function(){
     console.log("again next button clicked");
+    debugger;
     var user_selection = $("input:radio:checked").next().text();
     console.log("user_selection: "+ user_selection);
-    resultObject['Number']=questionObject.counter;
+    var resultObject = resultObject+"_"+questionObject.counter;
+    resultObject = {};
+    resultObject['Number']=questionObject.counter + 1;
     resultObject['Question']=questionObject.question;
     resultObject['Your Answer']=user_selection;
     resultObject['Correct Answer']=questionObject.answer;
@@ -288,18 +289,28 @@ create a dynamic result table in jquery using html5
 
 var resultTable =  function(){
 
+      //example result object
+
+      var example_obj = {
+        "Number" :0,
+        "Question":"",
+        "Your Answer":"",
+        "Correct Answer":"",
+        "Score":0
+      };
+
       //Create a HTML Table element.
         var table = $("<table />");
         table[0].border = "1";
- 
+        
         //Get the count of columns.
-        var columnCount = Object.keys(resultObject).length;
+        var columnCount = Object.keys(example_obj).length;
  
         //Add the header row.
         var row = $(table[0].insertRow(-1));
         for (var i = 0; i < columnCount; i++) {
             var headerCell = $("<th />");
-            headerCell.html( Object.keys(resultObject)[i]);
+            headerCell.html( Object.keys(example_obj)[i]);
             row.append(headerCell);
         }
  
@@ -355,14 +366,14 @@ var stopwatch_count = function(){
 };
 
 /*************************end of saving user selection to result object**************************************************************************/
-var timeConverter = function(millis) {
+/*********************************************************************************************************************************************/
+   
+  var timeConverter = function(millis) {
+  console.log(millis);
   var minutes = Math.floor(millis / 60000);
   var seconds = ((millis % 60000) / 1000).toFixed(0);
   return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
-
-/*********************************************************************************************************************************************/
-
 
 
 });
