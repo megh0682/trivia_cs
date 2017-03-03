@@ -18,14 +18,16 @@ $(document).ready(function(){
   var type="multiple";
   var localJsonDataSet = [];
 
- $.ajax({
+var generateToken = function(){
+
+$.ajax({
     url:   "https://opentdb.com/api_token.php?command=request",
     method:'GET'
   }).done(function(data){
     if(data.response_code === 0){
       //console.log("token generated successfully");
       token = data.token;
-      //console.log(data.token);
+      console.log(data.token + " token generated!");
     }else{
       token="";
     }    
@@ -33,7 +35,13 @@ $(document).ready(function(){
     console.log("error appeared...");
     //console.log(err.response_code);    
   });
+};
+
+
+/***********************************end of generate token function***************************************************************************************************************/
     //url to fetch the data
+
+var loadData = function(){
   var url = "https://opentdb.com/api.php?category=18";
   url += "&token="+token+"&amount="+numOfQuestions+"&difficulty="+level+"&type="+type;
   //a get call to load the data  
@@ -41,12 +49,30 @@ $(document).ready(function(){
     url:url,
     method:'GET'
     }).done(function(data){
-    //console.log(data.results); 
+    console.log(data.results + " data loaded"); 
     localJsonDataSet = data.results.slice();
     //console.log(localJsonDataSet);
     }).fail(function(err){
      //console.log(err.response_code) ;
+     var resCode = err.response_code;
+
+     switch(resCode){
+      
+      case '1' : console.log("Not enough questions to return.Error code is 1"); break;
+      case '2' : console.log("Invalid parameters in the arguments.Error code is 2"); break;
+      case '3' : console.log("Session token does not exist.Error code is 3"); break;
+      case '4' : console.log("Session token is empty.Need to regenerate the token.Error code is 4"); break;
+      default  : console.log("error response code is " + err.response_code); break;
+
+     }
+
     });
+}
+
+   generateToken();
+   loadData();
+
+/************************************end of loadData function********************************************************************************************************************/
 /********************************************************End of loading data**********************************************************************/
 
 var questionObject = {
@@ -166,7 +192,7 @@ var questionObject = {
 
  display:function(){
   
-  $("#question").html(this.question);  
+  $("#question").html("Q-" + (this.counter+1) + " : " + this.question);  
   $("#opt1").next().text(this.options[0]);
   $("#opt2").next().text(this.options[1]);
   $("#opt3").next().text(this.options[2]);
@@ -186,6 +212,8 @@ var resultArray = [];
 
 /***********************************************End of Result Array********************************************************/
 
+/***********************************************Button events*****************************************************************/
+
 /***************************************************** START THE QUIZ *********************************************************************/
 	
 $("#getStarted").click(function(event) {
@@ -196,6 +224,37 @@ $("#getStarted").click(function(event) {
    setInterval(isCounterMaxOut,1000);
 });
 
+/******************************************************************************************************************************************/
+
+/****************************************************more_trivia button event**********************************************************/
+$('body').on('click','#more_trivia',function(){
+   console.log("more_trivia clicked");
+   resultArray = [];
+   //$("#resultsHere").css("display", "none");
+   $("#nextBtn").prop('disabled', false);
+   $(".form-horizontal").css("visibility","visible");
+   $("#questionForm").css('display','initial');
+   console.log(token);
+   
+   if(token === ""){
+     generateToken();
+     loadData();
+   }else{
+    
+     loadData();
+   }
+   questionObject.counter = -1;
+   questionObject.init();
+   setInterval(isCounterMaxOut,1000);
+   $("#resultsHere").empty();
+});
+
+/****************************************************reset button event***************************************************************/
+$('body').on('click','#reset',function(){
+   //console.log("reset clicked");
+   $("#resultsHere").css("display", "none");
+   location.reload();
+});
 
 /********************************************************Shuffle the contents of options array****************************************************/
 /**
@@ -255,17 +314,35 @@ var isCounterMaxOut = function(){
     if(questionObject.counter>=10){
        var counterMaxEvent = new Event("counterMaxOut");
        document.body.dispatchEvent(counterMaxEvent);
+       questionObject.counter =-1;
     }
 
   };
   
   var quizOver = function(){
-    console.log("quiz is over");
+   // console.log("quiz is over");
+    $("#nextBtn").prop('disabled', true);
+    $("#questionForm").css('display','none');
     var tbl = resultTable();
-    console.log(tbl)
-    var resultDiv = $("<div id=\"resultDiv\">"+tbl+"</div>");
-    //resultDiv.html(tbl);
-    resultDiv.dialog({
+    //console.log(tbl);
+    $("#resultsHere").append(tbl);
+    //Add a button to go to next set of questions else reset to start again
+    var rowDiv = $("<div class=\"row\"></div>");
+    var colDiv1 = $("<div class=\"col-2-sm\"></div>");
+    var colDiv2 = $("<div class=\"col-2-sm\"></div>");
+    var more_trivia = $("<button id = \"more_trivia\">MORE TRIVIA</button>");
+    more_trivia.addClass("btn").addClass("btn-primary");
+    colDiv1.html(more_trivia);
+    colDiv1.appendTo(rowDiv);
+    var reset = $("<button id = \"reset\">RESET</button>");
+    reset.addClass("btn").addClass("btn-primary");
+    colDiv2.html(reset);
+    colDiv2.appendTo(rowDiv);
+    $("#resultsHere").append(rowDiv);
+    $("#resultsHere").css("display", "");
+
+   // $(".container").append(rowDiv);
+    /*resultDiv.dialog({
       width: 600,
       minHeight: 280,
       modal:true,
@@ -275,9 +352,10 @@ var isCounterMaxOut = function(){
          //$(this).dialog('close');
          //$("#getStarted").css("visibility", "visible");
         // $(".form-horizontal").css("visibility","hidden");
-         location.reload();      
+         location.reload(); 
+
       }
-    });
+    });*/
    
   };
   
@@ -353,16 +431,23 @@ var resultTable=  function(){
     var rowDiv = $("<div class = \"row\"></div>");
     rowDiv.attr("id" , "row-"+i);
 
+    var values = Object.values(resultArray[i]);
+    console.log(values);
+
     for(var j=0;j<5;j++){
        var colDiv = $("<div class = \"col-sm-2\"></div>");
        colDiv.attr("id" , "col-"+i+j); 
-       colDiv.html(resultArray[i][j]);
+       console.log(values[j]);
+       colDiv.html(values[j]);
        colDiv.appendTo(rowDiv);
     }
-
+   
     rowDiv.appendTo(wrapper);
-    return wrapper;
+    
   }
+
+
+return wrapper;
 
 
    

@@ -22,8 +22,8 @@
 <body>
     <div class="jumbotron vertical-center">
       <div class="container text-center">
-        <h1>Quiz Time  <i class="material-icons" style="font-size:48px;color:red">alarm</i></h1>
-        <div class="row">
+        <h1>Computer Science Trivia <i class="material-icons" style="font-size:48px;color:red">alarm</i></h1>
+        <div class="row" id="headerRow">
           <div class="col-md-12  text-center ">
             <button class="btn btn-primary" id = "getStarted">GET STARTED</button>
           </div>
@@ -34,7 +34,7 @@
        <div class="row timer">
        <i class="material-icons">alarm</i><span id="timerSpan"></span>
        </div>
-    <form class="form-horizontal">
+    <form class="form-horizontal" id = "questionForm">
      <fieldset>
       <div class="form-group">
         <div id = "question">Sorry the api is having some issues. Please visit later!</div>
@@ -65,5 +65,8 @@
       </div>
     </fieldset>
   </form>
+  <div id="resultsHere">
+     
+  </div>
 </body>
 </html>

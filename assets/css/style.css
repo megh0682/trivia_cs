@@ -1,6 +1,8 @@
 body{
 	background-color: #ADD8E6;
 	font-family: monospace;
+  color :#32CD32;
+  background-color: black;
 }
 html, body {
   height: 100%;
@@ -20,9 +22,12 @@ html, body {
   margin-right: 5%;
   margin-left: 5%;
   margin-bottom: 0; /* Remove the default bottom margin of .jumbotron */
+  background-color: #FF00FF; !important; 
+
 }
 .form-horizontal{
   visibility: hidden;
+  font-size:1.5em;
 }
 
 .row{
@@ -31,38 +36,11 @@ html, body {
 .timer>i{
 	visibility: hidden;
 }
-.dialogs { display: none; }
-
-.dialog {
-  background-color: #fff;
-  padding: 1em;
-  border-radius: .5em;
-  overflow:scroll;
-}
-.ui-dialog-titlebar{
-  border: none;
-  background-color: #333;
-  color: #fff;
-  padding: .5em 1em;
+#resultHere{
+  text-align: center;
+  font-family: monospace;
   font-size: 1em;
-  border-radius: .3em;
-}
-.ui-dialog-title{
-  color:#fff;
-  font-family: monospace;
-  font-weight: 1em;
-  text-align: center;
-}
-.ui-dialog-content{
-color:#fff;
-background-color: #eee;
-font-family: monospace;
-text-align: center;
-}
-#resultDiv{
-  text-align: center;
-  font-family: monospace;
-  font-size: 1em
+  overflow-y: scroll;
 }
 #resultTbl{
 text-align: center;
@@ -71,4 +49,7 @@ text-align: center;
 .well{
   text-align: left;
   padding-left: 0px;
+}
+.btn.btn-primary{
+  background-color: #FF00FF;
 }
