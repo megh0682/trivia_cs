@@ -37,27 +37,38 @@ html, body {
   background-color: #fff;
   padding: 1em;
   border-radius: .5em;
-  overflow: hidden;
+  overflow:scroll;
 }
-
-.dialog button {
+.ui-dialog-titlebar{
   border: none;
   background-color: #333;
   color: #fff;
   padding: .5em 1em;
   font-size: 1em;
   border-radius: .3em;
-  cursor: pointer;
 }
-
-.dialog button:hover { background-color: #444; }
-
-.dialog-footer {
-  background-color: #eee;
-  margin: -1em;
-  margin-top: 1em;
+.ui-dialog-title{
+  color:#fff;
+  font-family: monospace;
+  font-weight: 1em;
   text-align: center;
-  padding: 1em;
 }
+.ui-dialog-content{
+color:#fff;
+background-color: #eee;
+font-family: monospace;
+text-align: center;
+}
+#resultDiv{
+  text-align: center;
+  font-family: monospace;
+  font-size: 1em
+}
+#resultTbl{
+text-align: center;
 
-
+}
+.well{
+  text-align: left;
+  padding-left: 0px;
+}

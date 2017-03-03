@@ -23,15 +23,15 @@ $(document).ready(function(){
     method:'GET'
   }).done(function(data){
     if(data.response_code === 0){
-      console.log("token generated successfully");
+      //console.log("token generated successfully");
       token = data.token;
-      console.log(data.token);
+      //console.log(data.token);
     }else{
       token="";
     }    
   }).fail(function(err){
     console.log("error appeared...");
-    console.log(err.response_code);    
+    //console.log(err.response_code);    
   });
     //url to fetch the data
   var url = "https://opentdb.com/api.php?category=18";
@@ -41,11 +41,11 @@ $(document).ready(function(){
     url:url,
     method:'GET'
     }).done(function(data){
-    console.log(data.results); 
+    //console.log(data.results); 
     localJsonDataSet = data.results.slice();
-    console.log(localJsonDataSet);
+    //console.log(localJsonDataSet);
     }).fail(function(err){
-     console.log(err.response_code) ;
+     //console.log(err.response_code) ;
     });
 /********************************************************End of loading data**********************************************************************/
 
@@ -75,37 +75,37 @@ var questionObject = {
    this.millisec = 120000;
    clearTimeout(this.timeout_var);
    clearTimeout(this.timeout);
-   console.log("timer is OFF");
+   //console.log("timer is OFF");
    clearInterval(this.interval_var);
-   console.log("next click polling OFF");
+   //console.log("next click polling OFF");
    clearInterval(this.display_time_interval);
    this.display_time="00:00";
    this.display_time_seconds="";
    this.isNextClicked=false;
    this.counter = parseInt(this.counter) + 1;
-   console.log(this.counter);
+   //console.log(this.counter);
    this.data = this.getNextDataSet(this.counter);
-   console.log(this.data);
+   //console.log(this.data);
    this.question = this.data.question;
    //clone the options array 
    this.options = this.data.incorrect_answers.slice();
-   console.log(this.options);
+   //console.log(this.options);
    this.options.push(this.data.correct_answer);
-   console.log(this.options);
+   //console.log(this.options);
    var optArrayNew = shuffleArray(this.options);
-   console.log(optArrayNew);
+   //console.log(optArrayNew);
    this.options = optArrayNew.slice();
-   console.log(this.options);
+   //console.log(this.options);
    //initialize the correct answer
    this.answer = this.data.correct_answer;
-   console.log(this.answer);
+  // console.log(this.answer);
    //initialize the correct difficulty level
    this.level = this.data.difficulty; 
-   console.log(this.level);  
+   //console.log(this.level);  
    this.category = this.data.category;
-   console.log(this.category);  
+   //console.log(this.category);  
    this.type = this.data.type;
-   console.log(this.type);     
+   //console.log(this.type);     
    //start the clock
    this.display();
   },
@@ -121,18 +121,18 @@ var questionObject = {
      var self = this;
      this.intervalID = setInterval(function(){
      self.millisec = self.millisec -1000;
-     console.log(self.millisec);
+     //console.log(self.millisec);
      },1000);
   }
   if(this.millisec<=0){
     clearInterval(this.intervalID);
     this.intervalFlag = false;
     //this.millisec = 120000;
-    console.log(this.intervalFlag);
-    console.log("time up");
-    alert("Time up");
+    //console.log(this.intervalFlag);
+    //console.log("time up");
+    //("Time up");
     var user_selection = $("input:radio:checked").next().text();
-    console.log("user_selection: "+ user_selection);
+    //console.log("user_selection: "+ user_selection);
     var resultObject = resultObject+"_"+questionObject.counter;
     resultObject = {};
     resultObject['Number']=questionObject.counter + 1;
@@ -144,17 +144,16 @@ var questionObject = {
     }else{
         resultObject['Points Earned'] =0;
     }
-    debugger;
     resultArray.push(resultObject);
-    console.log(resultArray);
+    //console.log(resultArray);
     this.init();
   }
     var mmss = timeConverter(this.millisec);
-    console.log(mmss);
+    //console.log(mmss);
     var mmssArray = mmss.split(":");
     this.s = mmssArray[1].trim();
     this.m = mmssArray[0].trim();
-    console.log("seconds:" +this.s + "minutes:"+this.m);
+    //console.log("seconds:" +this.s + "minutes:"+this.m);
     $("#displayTimer > span").html("Timer : "+ this.m + ":" +this.s);
     if(this.s<10){
       this.s= "" + this.s;
@@ -172,8 +171,6 @@ var questionObject = {
   $("#opt2").next().text(this.options[1]);
   $("#opt3").next().text(this.options[2]);
   $("#opt4").next().text(this.options[3]);
-  //$("h1").text(m+" : "+s);
-  //$("#displayTimer > span").html("Timer : "+ this.m + ":" +this.s);
   $("input:radio").attr("checked", false);
   $("input:radio").removeAttr("checked");
   $("input:radio").prop("checked", false);
@@ -187,12 +184,12 @@ var questionObject = {
 /**********************************************Result Array*****************************************************************/
 var resultArray = [];
 
-/***********************************************End of Result Object*********************************************************/
+/***********************************************End of Result Array********************************************************/
 
 /***************************************************** START THE QUIZ *********************************************************************/
 	
 $("#getStarted").click(function(event) {
-   console.log("getStarted clicked");
+   //console.log("getStarted clicked");
    $(this).css("visibility", "hidden");
    $(".form-horizontal").css("visibility","visible");
    questionObject.init();
@@ -222,16 +219,15 @@ create an event to poll on user clicking the Next button to move on to next quiz
 */
   
 $("#nextBtn").click(function(){
-    console.log("next button clicked");
+    //console.log("next button clicked");
     var nextButtonClickedEvent = new Event("nextBtnClicked");
     document.body.dispatchEvent(nextButtonClickedEvent);
   });
   
   var isNextInvoked = function(){
-    console.log("again next button clicked");
-    debugger;
+   //// console.log("again next button clicked");
     var user_selection = $("input:radio:checked").next().text();
-    console.log("user_selection: "+ user_selection);
+   // console.log("user_selection: "+ user_selection);
     var resultObject = resultObject+"_"+questionObject.counter;
     resultObject = {};
     resultObject['Number']=questionObject.counter + 1;
@@ -244,7 +240,7 @@ $("#nextBtn").click(function(){
       resultObject['Points Earned'] =0;
     }
     resultArray.push(resultObject);
-    console.log(resultArray);
+    //console.log(resultArray);
     questionObject.init();
     //questionObject.isNextClicked = true;
   };
@@ -265,17 +261,21 @@ var isCounterMaxOut = function(){
   
   var quizOver = function(){
     console.log("quiz is over");
-    var table = resultTable();
-    var resultDiv = $("<div></div>");
-    resultDiv.html(table);
+    var tbl = resultTable();
+    console.log(tbl)
+    var resultDiv = $("<div id=\"resultDiv\">"+tbl+"</div>");
+    //resultDiv.html(tbl);
     resultDiv.dialog({
       width: 600,
-      minWidth: 400,
       minHeight: 280,
-      
+      modal:true,
+      title:"Review Your Answers",
       close:function(){
-            
-            location.reload();      
+         //console.log("getStarted clicked");
+         //$(this).dialog('close');
+         //$("#getStarted").css("visibility", "visible");
+        // $(".form-horizontal").css("visibility","hidden");
+         location.reload();      
       }
     });
    
@@ -287,7 +287,9 @@ var isCounterMaxOut = function(){
 create a dynamic result table in jquery using html5
 */
 
-var resultTable =  function(){
+var resultTable=  function(){
+     
+     /*
 
       //example result object
 
@@ -298,9 +300,11 @@ var resultTable =  function(){
         "Correct Answer":"",
         "Score":0
       };
+      
 
       //Create a HTML Table element.
-        var table = $("<table />");
+        var table = $("<table id = \"resultTbl\"></table>");
+        //table[0].attr("id", "resultTbl"); 
         table[0].border = "1";
         
         //Get the count of columns.
@@ -310,12 +314,12 @@ var resultTable =  function(){
         var row = $(table[0].insertRow(-1));
         for (var i = 0; i < columnCount; i++) {
             var headerCell = $("<th />");
-            headerCell.html( Object.keys(example_obj)[i]);
+            headerCell.html( Object.keys(example_obj));
             row.append(headerCell);
         }
  
         //Add the data rows.
-        for (var i = 1; i < resultArray.length; i++) {
+        for (var i = 0; i < resultArray.length; i++) {
             row = $(table[0].insertRow(-1));
             var values = Object.values(resultArray[i]);
             console.log(values);
@@ -325,8 +329,44 @@ var resultTable =  function(){
                 row.append(cell);
             }
         }
+
+         return table;
+
+  */
+  var tblHeaderVal = ["#","Question","Your Answer","Correct Answer","Score"];
+  var wrapper = $("<div></div>");
+  var headerDiv = $("<div class = \"row\"></div>");
+      headerDiv.attr("id" , "headerDiv");
+
+      for(var k=0;k<5;k++){
+       var colDiv = $("<div class = \"col-sm-2\"></div>");
+       colDiv.attr("id" , "headercol-"+k); 
+       colDiv.html(tblHeaderVal[k]);
+       colDiv.appendTo(headerDiv);
+      }
+
+      headerDiv.appendTo(wrapper);
+
+
+  for(var i=0;i<resultArray.length;i++){
+
+    var rowDiv = $("<div class = \"row\"></div>");
+    rowDiv.attr("id" , "row-"+i);
+
+    for(var j=0;j<5;j++){
+       var colDiv = $("<div class = \"col-sm-2\"></div>");
+       colDiv.attr("id" , "col-"+i+j); 
+       colDiv.html(resultArray[i][j]);
+       colDiv.appendTo(rowDiv);
+    }
+
+    rowDiv.appendTo(wrapper);
+    return wrapper;
+  }
+
+
    
-   return table;
+  
 
 };
 
@@ -337,7 +377,7 @@ Save the user choice radio button selection text saved to result object
 $("input:radio").click(function() {
   
   var user_selection = $(this).next().text();
-  console.log("user_selection: "+ user_selection);
+  //console.log("user_selection: "+ user_selection);
  
 });
 
@@ -349,8 +389,8 @@ var stopwatch_count = function(){
        questionObject.display_time = timeConverter(questionObject.display_time_seconds);
        if(questionObject.display_time_seconds <=0){
         var user_selection = $("input:radio:checked").next().text();
-        console.log("user_selection: "+ user_selection);
-        resultObject['Number']=questionObject.counter;
+        //console.log("user_selection: "+ user_selection);
+        resultObject['Number']=questionObject.counter + 1;
         resultObject['Question']=questionObject.question;
         resultObject['Your Answer']=user_selection;
         resultObject['Correct Answer']=questionObject.answer;
@@ -360,7 +400,7 @@ var stopwatch_count = function(){
             resultObject['Points Earned'] =0;
         }
         resultArray.push(resultObject);
-        console.log(resultArray);
+        //console.log(resultArray);
         questionObject.init();
        }
 };
@@ -369,7 +409,7 @@ var stopwatch_count = function(){
 /*********************************************************************************************************************************************/
    
   var timeConverter = function(millis) {
-  console.log(millis);
+  //console.log(millis);
   var minutes = Math.floor(millis / 60000);
   var seconds = ((millis % 60000) / 1000).toFixed(0);
   return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
